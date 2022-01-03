@@ -1,6 +1,7 @@
 local Character
 local Hitbox
 local Weld
+local Hand = "Left"
 function Setup()
 	Character = game.Players.LocalPlayer.Character
 	Hitbox = Instance.new("Part")
@@ -19,6 +20,19 @@ function Setup()
 		--Does nothing, only creates a TouchInterest we need.
 	end)
 end
+function LoadAnimation(AnimationId)
+	local Animation = Instance.new("Animation")
+	Animation.AnimationId = AnimationId
+	if Character then
+		if Character:FindFirstChildOfClass("Humanoid") then
+			if Character:FindFirstChildOfClass("Humanoid"):FindFirstChildOfClass("Animator") then
+				return Character:FindFirstChildOfClass("Humanoid"):FindFirstChildOfClass("Animator"):LoadAnimation(Animation)
+			else
+				return Character:FindFirstChildOfClass("Humanoid"):LoadAnimation(Animation)
+			end
+		end
+	end
+end
 Setup()
 game.Players.LocalPlayer.CharacterAdded:Connect(function()
 	Setup()
@@ -26,6 +40,13 @@ end)
 game:GetService("UserInputService").InputBegan:Connect(function(Input)
 	--who doesn't love redundancy
 	if Input.KeyCode == Enum.KeyCode.F and Character and Hitbox and Weld then
+		if Hand ~= "Right" then
+			Hand = "Right"
+			LoadAnimation("rbxassetid://484200742"):Play()
+		else
+			Hand = "Left"
+			LoadAnimation("rbxassetid://484926359"):Play()
+		end
 		for Index, Value in ipairs(Hitbox:GetTouchingParts()) do
 			if Value.Parent then
 				if Value.Parent:IsA("Model") then
